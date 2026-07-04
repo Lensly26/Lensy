@@ -2224,63 +2224,96 @@ export function MainLayout() {
       <div style={{ display: "flex", flexDirection: "row", flex: 1, width: "100%", height: "100%", overflow: "hidden" }}>
         {/* ─── Server Rail ─── */}
         <aside className="server-rail">
-        {/* DMs */}
-        <div title="Direct Messages" onClick={() => { setActiveGuildId(null); }}
-          className={`server-icon ${!activeGuildId ? "active" : ""}`}
-          style={{ 
-            background: !activeGuildId ? "linear-gradient(135deg,rgba(79,124,255,0.3),rgba(140,94,255,0.2))" : undefined,
-            padding: 0,
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-          <img src="/logo.png" alt="Lensly Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        </div>
-
-        {/* Friends */}
-        <div title="Friends" className={`server-icon ${showFriendsPanel ? "active" : ""}`}
-          onClick={() => { setActiveGuildId(null); setShowFriendsPanel(f => !f); }}
-          style={{ position: "relative" }}>
-          👥
-          {friendRequests.length > 0 && (
-            <span style={{ position: "absolute", top: -2, right: -2, background: "var(--danger)", borderRadius: "50%", width: 14, height: 14, fontSize: 9, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{friendRequests.length}</span>
-          )}
-        </div>
-
-        <div className="server-rail-sep" />
-
-        {guilds.filter(g => {
-          const isManagement = me?.role && ["MANAGER", "DEVELOPER", "CO_OWNER", "OWNER"].includes(me.role.toUpperCase());
-          if (g.status === "DELETED" && !isManagement) return false;
-          if (g.status === "SUSPENDED" && !isManagement) return false;
-          return true;
-        }).map((g) => (
-          <div key={g.id} title={g.name + (g.status === "SUSPENDED" ? " (Suspended)" : g.status === "DELETED" ? " (Deleted)" : "")}
-            className={`server-icon ${g.id === activeGuildId ? "active" : ""}`}
-            style={{ opacity: g.status === "SUSPENDED" || g.status === "DELETED" ? 0.5 : 1, filter: g.status === "DELETED" ? "grayscale(100%)" : "none" }}
-            onClick={() => { setShowFriendsPanel(false); setActiveGuildId(g.id); const ch = g.channels?.find((c) => c.type === "TEXT") ?? g.channels?.[0]; if (ch) setActiveChannelId(ch.id); }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setServerContextMenu({ x: e.clientX, y: e.clientY, guildId: g.id, guildName: g.name });
-            }}>
-            {g.iconUrl ? <img src={g.iconUrl} alt={g.name} /> : g.name.slice(0, 2).toUpperCase()}
-            {(g.boostCount ?? 0) > 0 && <span className="boost-indicator">🚀</span>}
-            {g.status === "SUSPENDED" && <span style={{ position: "absolute", bottom: -2, right: -2, background: "#F59E0B", borderRadius: "50%", width: 14, height: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>⚠️</span>}
-            {g.status === "DELETED" && <span style={{ position: "absolute", bottom: -2, right: -2, background: "#EF4444", borderRadius: "50%", width: 14, height: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>❌</span>}
+          {/* DMs */}
+          <div className={`server-rail-item ${!activeGuildId && !showFriendsPanel ? "active" : ""}`}>
+            <div className="server-pill" />
+            <div title="Direct Messages" onClick={() => { setShowFriendsPanel(false); setActiveGuildId(null); }}
+              className={`server-icon ${!activeGuildId && !showFriendsPanel ? "active" : ""}`}
+              style={{ 
+                background: !activeGuildId && !showFriendsPanel ? "linear-gradient(135deg,rgba(79,124,255,0.3),rgba(140,94,255,0.2))" : undefined,
+                padding: 0,
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+              <img src="/logo.png" alt="Lensly Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
           </div>
-        ))}
 
-        <div className="server-rail-sep" />
-        <div className="server-add-btn" title="Add Server" onClick={() => setShowNewServer(true)}>+</div>
+          {/* Friends */}
+          <div className={`server-rail-item ${showFriendsPanel ? "active" : ""}`}>
+            <div className="server-pill" />
+            <div title="Friends" className={`server-icon ${showFriendsPanel ? "active" : ""}`}
+              onClick={() => { setActiveGuildId(null); setShowFriendsPanel(f => !f); }}
+              style={{ position: "relative" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="sidebar-svg">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              {friendRequests.length > 0 && (
+                <span style={{ position: "absolute", top: -2, right: -2, background: "var(--danger)", borderRadius: "50%", width: 14, height: 14, fontSize: 9, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>{friendRequests.length}</span>
+              )}
+            </div>
+          </div>
 
-        {/* Discover */}
-        <div className="server-icon discover-btn" title="Discover Public Servers"
-          onClick={() => { void loadPublicGuilds(); setShowDiscovery(true); }} style={{ fontSize: 18, marginTop: 4 }}>
-          🔍
-        </div>
-      </aside>
+          <div className="server-rail-sep" />
+
+          {guilds.filter(g => {
+            const isManagement = me?.role && ["MANAGER", "DEVELOPER", "CO_OWNER", "OWNER"].includes(me.role.toUpperCase());
+            if (g.status === "DELETED" && !isManagement) return false;
+            if (g.status === "SUSPENDED" && !isManagement) return false;
+            return true;
+          }).map((g) => {
+            const isActive = g.id === activeGuildId && !showFriendsPanel;
+            return (
+              <div key={g.id} className={`server-rail-item ${isActive ? "active" : ""}`}>
+                <div className="server-pill" />
+                <div title={g.name + (g.status === "SUSPENDED" ? " (Suspended)" : g.status === "DELETED" ? " (Deleted)" : "")}
+                  className={`server-icon ${isActive ? "active" : ""}`}
+                  style={{ opacity: g.status === "SUSPENDED" || g.status === "DELETED" ? 0.5 : 1, filter: g.status === "DELETED" ? "grayscale(100%)" : "none" }}
+                  onClick={() => { setShowFriendsPanel(false); setActiveGuildId(g.id); const ch = g.channels?.find((c) => c.type === "TEXT") ?? g.channels?.[0]; if (ch) setActiveChannelId(ch.id); }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setServerContextMenu({ x: e.clientX, y: e.clientY, guildId: g.id, guildName: g.name });
+                  }}>
+                  {g.iconUrl ? <img src={g.iconUrl} alt={g.name} /> : g.name.slice(0, 2).toUpperCase()}
+                  {(g.boostCount ?? 0) > 0 && <span className="boost-indicator">🚀</span>}
+                  {g.status === "SUSPENDED" && <span style={{ position: "absolute", bottom: -2, right: -2, background: "#F59E0B", borderRadius: "50%", width: 14, height: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>⚠️</span>}
+                  {g.status === "DELETED" && <span style={{ position: "absolute", bottom: -2, right: -2, background: "#EF4444", borderRadius: "50%", width: 14, height: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>❌</span>}
+                </div>
+              </div>
+            );
+          })}
+
+          <div className="server-rail-sep" />
+
+          {/* Add Server */}
+          <div className="server-rail-item">
+            <div className="server-pill" />
+            <div className="server-icon add-btn" title="Add Server" onClick={() => setShowNewServer(true)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Discover */}
+          <div className="server-rail-item">
+            <div className="server-pill" />
+            <div className="server-icon discover-btn" title="Discover Public Servers"
+              onClick={() => { void loadPublicGuilds(); setShowDiscovery(true); }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+          </div>
+        </aside>
 
       {/* ─── Channel Sidebar ─── */}
       <aside className="channel-sidebar">

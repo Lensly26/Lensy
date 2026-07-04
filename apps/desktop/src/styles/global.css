@@ -254,22 +254,81 @@ a { color: var(--accent); text-decoration: none; }
   display: flex; flex-direction: column; align-items: center;
   padding: 12px 0; gap: 6px; overflow-y: auto;
 }
+.server-rail-item {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.server-pill {
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: var(--accent);
+  border-radius: 0 4px 4px 0;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 6px var(--accent);
+}
+.server-rail-item:hover .server-pill {
+  height: 20px;
+}
+.server-rail-item.active .server-pill {
+  height: 40px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
 .server-icon {
-  width: 48px; height: 48px; border-radius: 14px;
+  width: 48px; height: 48px; border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 14px; cursor: pointer;
   background: rgba(255,255,255,0.05); color: var(--text);
   border: 1px solid transparent;
-  transition: all 0.18s ease; position: relative;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;
 }
-.server-icon:hover { border-radius: 12px; background: rgba(233, 69, 96, 0.2); border-color: rgba(233, 69, 96, 0.4); }
-.server-icon.active { background: linear-gradient(135deg, rgba(233, 69, 96, 0.3), rgba(255, 107, 107, 0.25)); border-color: rgba(233, 69, 96, 0.5); border-radius: 12px; }
+.server-icon:hover { 
+  border-radius: 12px; 
+  background: var(--bg-hover); 
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+}
+.server-icon.active { 
+  background: linear-gradient(135deg, var(--bg-active), rgba(255, 255, 255, 0.05)); 
+  border-color: var(--accent); 
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
 .server-icon img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
-.server-rail-sep { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
-.server-add-btn { width: 48px; height: 48px; border-radius: 999px; background: rgba(46, 213, 115, 0.15); color: var(--success); font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(46, 213, 115, 0.3); transition: all 0.15s; }
-.server-add-btn:hover { border-radius: 14px; background: rgba(46, 213, 115, 0.25); }
-.discover-btn { background: rgba(233, 69, 96, 0.12); border-color: rgba(233, 69, 96, 0.25); }
-.discover-btn:hover { background: rgba(233, 69, 96, 0.25); }
+.server-rail-sep { 
+  width: 32px; 
+  height: 2px; 
+  background: linear-gradient(90deg, transparent, var(--border), transparent); 
+  margin: 6px 0; 
+  border-radius: 1px;
+}
+.server-icon.add-btn {
+  background: rgba(46, 213, 115, 0.08);
+  border-color: rgba(46, 213, 115, 0.15);
+  color: var(--success);
+}
+.server-icon.add-btn:hover {
+  background: rgba(46, 213, 115, 0.2);
+  border-color: var(--success);
+  border-radius: 12px;
+}
+.server-icon.discover-btn {
+  background: rgba(79, 124, 255, 0.08);
+  border-color: rgba(79, 124, 255, 0.15);
+  color: var(--accent);
+}
+.server-icon.discover-btn:hover {
+  background: rgba(79, 124, 255, 0.2);
+  border-color: var(--accent);
+  border-radius: 12px;
+}
 
 /* Boost badge on server icon */
 .boost-indicator {

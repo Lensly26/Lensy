@@ -68,9 +68,11 @@ export function PremiumPage() {
   const [processing, setProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [showStripeComingSoon, setShowStripeComingSoon] = useState(false);
-  const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+
+  // Dynamic Stripe Check
+  const [checkingStripe, setCheckingStripe] = useState(true);
+  const [stripeConfigured, setStripeConfigured] = useState(false);
 
   // Payment form state
   const [cardName, setCardName] = useState("");
@@ -80,6 +82,28 @@ export function PremiumPage() {
   const [cardZip, setCardZip] = useState("");
 
   const alreadyPremium = me?.isPremium === true;
+
+  // Check if Stripe is configured on load
+  useEffect(() => {
+    async function checkStripe() {
+      try {
+        const response = await fetch("/api/stripe-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ priceId: "check", userId: me?.id || "check" })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setStripeConfigured(!data.isMock);
+        }
+      } catch (err) {
+        console.warn("Failed to check Stripe configuration status:", err);
+      } finally {
+        setCheckingStripe(false);
+      }
+    }
+    checkStripe();
+  }, [me]);
 
   useEffect(() => {
     const plan = queryParams.get("priceId");
@@ -125,14 +149,12 @@ export function PremiumPage() {
         isPremium: true,
         premiumPlan: selectedPlan,
         premiumSince: Timestamp.now(),
-        // Save mock payment info
         premiumPaymentName: cardName,
         premiumPaymentLast4: cardNumber.slice(-4)
       });
       await refreshMe();
       setShowCheckout(false);
       setShowSuccess(true);
-      // Reset form
       setCardName("");
       setCardNumber("");
       setCardExpiry("");
@@ -147,42 +169,7 @@ export function PremiumPage() {
 
   const handleCheckoutInit = async () => {
     if (!me) return;
-    setLoadingCheckout(true);
-    try {
-      const response = await fetch("/api/stripe-checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId: selectedPlan,
-          userId: me.id,
-          successUrl: window.location.origin + "/profile?session_id={CHECKOUT_SESSION_ID}",
-          cancelUrl: window.location.origin + "/premium",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.url) {
-          if (data.isMock) {
-            setShowStripeComingSoon(true);
-            return;
-          } else {
-            window.location.href = data.url;
-            return;
-          }
-        }
-      }
-      
-      // Fallback
-      setShowStripeComingSoon(true);
-    } catch (err) {
-      console.warn("Failed to contact Stripe API, showing coming soon status:", err);
-      setShowStripeComingSoon(true);
-    } finally {
-      setLoadingCheckout(false);
-    }
+    setShowCheckout(true);
   };
 
   const handleDowngrade = async () => {
@@ -208,6 +195,102 @@ export function PremiumPage() {
   };
 
   if (!me) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}><div className="loader" /></div>;
+
+  // Render Loader during check
+  if (checkingStripe) {
+    return (
+      <div style={{ minHeight: "100vh", background: "var(--bg-deep)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="loader" />
+      </div>
+    );
+  }
+
+  // Render full-page Coming Soon if Stripe is not setup yet
+  if (!stripeConfigured) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "var(--bg-deep)",
+        fontFamily: "var(--font)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+        boxSizing: "border-box",
+        position: "relative",
+        overflow: "hidden"
+      }}>
+        {/* Ambient background */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+          <div style={{ position: "absolute", top: "20%", left: "25%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(140,94,255,0.08) 0%, transparent 70%)", filter: "blur(60px)" }} />
+          <div style={{ position: "absolute", bottom: "20%", right: "20%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(79,124,255,0.06) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        </div>
+
+        <div style={{
+          position: "relative", zIndex: 1,
+          width: "100%", maxWidth: 460,
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 24, padding: "40px 32px",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 25px 60px rgba(0,0,0,0.5)",
+          textAlign: "center"
+        }}>
+          <div style={{ 
+            display: "inline-flex", 
+            width: 72, height: 72, 
+            background: "linear-gradient(135deg, rgba(140,94,255,0.2) 0%, rgba(255,94,173,0.2) 100%)",
+            borderRadius: "50%",
+            alignItems: "center", justifyContent: "center",
+            fontSize: 32, marginBottom: 24,
+            border: "1px solid rgba(140,94,255,0.3)",
+            boxShadow: "0 0 20px rgba(140,94,255,0.3)",
+            animation: "pulseGlow 2.5s infinite alternate"
+          }}>
+            💎
+          </div>
+          <h1 style={{
+            fontSize: 30, fontWeight: 900, letterSpacing: "-0.03em",
+            background: "linear-gradient(135deg, #8C5EFF 0%, #FF5EAD 100%)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            margin: "0 0 8px 0", lineHeight: 1.1
+          }}>
+            Lensly Premium
+          </h1>
+          <div style={{
+            display: "inline-block", padding: "4px 10px", borderRadius: 6,
+            background: "rgba(245, 158, 11, 0.15)", border: "1px solid rgba(245, 158, 11, 0.3)",
+            color: "#F59E0B", fontSize: 11, fontWeight: 800, textTransform: "uppercase",
+            letterSpacing: "0.05em", marginBottom: 20
+          }}>
+            Coming Soon
+          </div>
+          <p style={{ 
+            color: "var(--text-muted)", fontSize: 14, lineHeight: 1.7, 
+            margin: "0 0 28px 0" 
+          }}>
+            We are currently configuring our payment systems. Premium subscriptions will be unlocked soon with exclusive badges, custom banners, animated avatars, and more!
+          </p>
+          <Link to="/app" style={{
+            textDecoration: "none", display: "inline-block", width: "100%"
+          }}>
+            <button style={{
+              width: "100%", padding: "12px", borderRadius: 12,
+              background: "linear-gradient(135deg, #8C5EFF, #FF5EAD)",
+              border: "none", color: "#fff", fontSize: 14, fontWeight: 700,
+              cursor: "pointer", boxShadow: "0 4px 16px rgba(140,94,255,0.3)",
+              transition: "all 0.15s"
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(140,94,255,0.4)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(140,94,255,0.3)"; }}
+            >
+              Return to App
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const activePlan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
 
@@ -254,51 +337,6 @@ export function PremiumPage() {
             }}>
               View My Profile →
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Stripe Coming Soon Modal */}
-      {showStripeComingSoon && (
-        <div style={{
-          position: "fixed", inset: 0, zIndex: 1000,
-          background: "rgba(0,0,0,0.8)", backdropFilter: "blur(12px)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          padding: 20
-        }}>
-          <div style={{
-            width: "100%", maxWidth: 440,
-            background: "rgba(25,28,47,0.95)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: 24, padding: "32px",
-            boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
-            textAlign: "center",
-            boxSizing: "border-box"
-          }}>
-            <div style={{ fontSize: 56, marginBottom: 16 }}>💳</div>
-            <h3 style={{ fontSize: 22, fontWeight: 800, color: "#fff", margin: "0 0 10px 0" }}>Stripe Payment Gateway</h3>
-            <div style={{
-              display: "inline-block", padding: "4px 10px", borderRadius: 6,
-              background: "rgba(245, 158, 11, 0.15)", border: "1px solid rgba(245, 158, 11, 0.3)",
-              color: "#F59E0B", fontSize: 11, fontWeight: 800, textTransform: "uppercase",
-              letterSpacing: "0.05em", marginBottom: 16
-            }}>
-              Coming Soon
-            </div>
-            <p style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.6, margin: "0 0 24px 0" }}>
-              Real-money premium purchases are currently under construction while Stripe is being configured by the development team. 
-            </p>
-            
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <button onClick={() => setShowStripeComingSoon(false)} style={{
-                width: "100%", padding: "12px", borderRadius: 12,
-                background: "linear-gradient(135deg, #8C5EFF, #FF5EAD)",
-                border: "none", color: "#fff", fontSize: 14, fontWeight: 700,
-                cursor: "pointer", boxShadow: "0 4px 16px rgba(140,94,255,0.3)"
-              }}>
-                Close
-              </button>
-            </div>
           </div>
         </div>
       )}

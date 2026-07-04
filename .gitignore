@@ -2,7 +2,11 @@ node_modules
 dist
 build
 out
-public
+/public
+/apps/website/public
+/apps/website/out
+/apps/website/dist
+/apps/website/build
 .turbo
 .env
 .env.local
@@ -17,3 +21,4 @@ service-account.json
 
 .vercel
 .env*
+*.dll

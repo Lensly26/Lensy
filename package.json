@@ -28,6 +28,7 @@
     "@types/nodemailer": "^8.0.0",
     "fastify": "^5.8.5",
     "firebase-admin": "^13.0.1",
-    "nodemailer": "^8.0.7"
+    "nodemailer": "^8.0.7",
+    "stripe": "^22.3.0"
   }
 }

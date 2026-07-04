@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../lib/auth-store.js";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../lib/firebase.js";
@@ -61,11 +61,14 @@ export function PremiumPage() {
   const me = useAuthStore((s) => s.me);
   const refreshMe = useAuthStore((s) => s.refreshMe);
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   
   const [selectedPlan, setSelectedPlan] = useState("yearly");
   const [processing, setProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
   // Payment form state
@@ -76,6 +79,17 @@ export function PremiumPage() {
   const [cardZip, setCardZip] = useState("");
 
   const alreadyPremium = me?.isPremium === true;
+
+  useEffect(() => {
+    const isMock = queryParams.get("mock_checkout") === "true";
+    const plan = queryParams.get("priceId");
+    if (isMock) {
+      setShowCheckout(true);
+      if (plan) {
+        setSelectedPlan(plan);
+      }
+    }
+  }, [location.search]);
 
   // Format card number with spaces every 4 digits
   const handleCardNumberChange = (value: string) => {
@@ -131,6 +145,41 @@ export function PremiumPage() {
       alert("Payment processing failed. Please try again. " + err);
     } finally {
       setProcessing(false);
+    }
+  };
+
+  const handleCheckoutInit = async () => {
+    if (!me) return;
+    setLoadingCheckout(true);
+    try {
+      const response = await fetch("/api/stripe-checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId: selectedPlan,
+          userId: me.id,
+          successUrl: window.location.origin + "/profile?session_id={CHECKOUT_SESSION_ID}",
+          cancelUrl: window.location.origin + "/premium",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+      
+      // Fallback
+      setShowCheckout(true);
+    } catch (err) {
+      console.warn("Failed to contact Stripe API, falling back to local checkout:", err);
+      setShowCheckout(true);
+    } finally {
+      setLoadingCheckout(false);
     }
   };
 
@@ -493,19 +542,30 @@ export function PremiumPage() {
 
             {/* Purchase Button */}
             <div style={{ textAlign: "center" }}>
-              <button onClick={() => setShowCheckout(true)} style={{
-                padding: "14px 48px",
-                borderRadius: 14,
-                background: "linear-gradient(135deg, #8C5EFF, #FF5EAD)",
-                border: "none",
-                color: "#fff",
-                fontSize: 16, fontWeight: 800,
-                cursor: "pointer",
-                boxShadow: "0 6px 30px rgba(140,94,255,0.4)",
-                transition: "all 0.2s",
-                minWidth: 260,
-              }}>
-                Buy Premium — {PLANS.find(p => p.id === selectedPlan)?.price}
+              <button 
+                onClick={handleCheckoutInit} 
+                disabled={loadingCheckout}
+                style={{
+                  padding: "14px 48px",
+                  borderRadius: 14,
+                  background: loadingCheckout ? "rgba(140,94,255,0.3)" : "linear-gradient(135deg, #8C5EFF, #FF5EAD)",
+                  border: "none",
+                  color: "#fff",
+                  fontSize: 16, fontWeight: 800,
+                  cursor: loadingCheckout ? "default" : "pointer",
+                  boxShadow: loadingCheckout ? "none" : "0 6px 30px rgba(140,94,255,0.4)",
+                  transition: "all 0.2s",
+                  minWidth: 260,
+                }}
+              >
+                {loadingCheckout ? (
+                  <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+                    <span className="loader" style={{ width: 16, height: 16, borderWidth: 2 }} />
+                    Contacting Stripe...
+                  </span>
+                ) : (
+                  `Buy Premium — ${PLANS.find(p => p.id === selectedPlan)?.price}`
+                )}
               </button>
               <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 12 }}>
                 🔒 Secured by Lensly. Cancel anytime from Settings.

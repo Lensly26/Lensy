@@ -721,17 +721,100 @@ a { color: var(--accent); text-decoration: none; }
 /* ─── STATUS MENU ─── */
 .status-menu {
   position: absolute; bottom: 60px; left: 8px;
-  background: var(--bg-elevated); border: 1px solid var(--border);
-  border-radius: 12px; padding: 6px; min-width: 220px; z-index: 100;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  min-width: 260px; z-index: 100;
+}
+.status-menu-card {
+  background: rgba(15,17,28,0.96);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.45);
+  min-width: 280px;
   animation: popIn 0.15s ease;
 }
-.status-menu-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 7px; font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: background 0.1s;
+.status-menu-header {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px;
 }
-.status-menu-item:hover { background: var(--bg-hover); }
+.status-menu-title {
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+.status-menu-subtitle {
+  font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4;
+}
+.status-menu-close {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+  color: var(--text); font-size: 12px; border-radius: 10px; padding: 6px 10px; cursor: pointer;
+}
+.status-menu-section {
+  display: grid; gap: 10px;
+  margin-bottom: 14px;
+}
+.status-menu-section--accented {
+  padding: 14px; border-radius: 16px; background: rgba(255,255,255,0.03);
+}
+.status-menu-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
+}
+.status-status-edit-row {
+  display: flex; gap: 8px;
+}
+.status-status-input {
+  flex: 1; padding: 8px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03); color: #fff; font-size: 12px;
+}
+.status-status-save {
+  min-width: 70px; font-size: 12px; padding: 8px 10px;
+}
+.status-status-preview {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-muted); background: rgba(255,255,255,0.02); cursor: pointer;
+}
+.status-status-preview:hover { background: rgba(255,255,255,0.05); }
+.status-status-edit-icon { font-size: 12px; }
+.status-presence-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+}
+.status-presence-pill {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);
+  color: var(--text); font-weight: 700; text-align: left; cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.status-presence-pill:hover { transform: translateY(-1px); border-color: rgba(79,124,255,0.3); background: rgba(79,124,255,0.08); }
+.status-presence-pill.active { border-color: rgba(79,124,255,0.6); background: rgba(79,124,255,0.12); }
+.status-presence-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.status-toggle-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+}
+.status-toggle {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.02); color: var(--text); font-weight: 700; cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.status-toggle:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); }
+.status-toggle.active { background: rgba(52,211,153,0.14); border-color: rgba(52,211,153,0.35); }
+.status-quality-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.status-quality-buttons {
+  display: flex; gap: 8px;
+}
+.quality-btn {
+  padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.10);
+  background: transparent; color: var(--text-muted); font-size: 11px; font-weight: 800; cursor: pointer;
+  transition: all 0.15s ease;
+}
+.quality-btn:hover { border-color: rgba(255,255,255,0.18); }
+.quality-btn.active { background: rgba(79,124,255,0.14); border-color: rgba(79,124,255,0.5); color: #fff; }
+.status-menu-logout {
+  width: 100%; margin-top: 8px; padding: 12px 14px; border-radius: 16px;
+  background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #F87171; font-weight: 800;
+  cursor: pointer; text-align: center;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+.status-menu-logout:hover { transform: translateY(-1px); background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.35); }
 
 /* ─── GLOWING STATUS PULSE ─── */
 @keyframes statusPulse {

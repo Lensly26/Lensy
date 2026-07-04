@@ -2717,54 +2717,69 @@ export function MainLayout() {
         <div className="user-panel-glass" style={{ position: "relative" }}>
           {showPresenceMenu && (
             <div className="status-menu">
-              {/* Custom status input */}
-              <div style={{ padding: "8px 10px", borderBottom: "1px solid var(--border)", marginBottom: 4 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, textTransform: "uppercase" }}>Custom Status</div>
-                {showStatusEdit ? (
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <input value={statusDraft} onChange={e => setStatusDraft(e.target.value)} placeholder="What's on your mind?"
-                      autoFocus onKeyDown={e => { if (e.key === "Enter") void saveCustomStatus(); if (e.key === "Escape") { setShowStatusEdit(false); } }}
-                      style={{ flex: 1, padding: "5px 8px", borderRadius: 6, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "#fff", fontSize: 12 }} />
-                    <button className="btn btn-primary" style={{ padding: "4px 8px", fontSize: 11 }} onClick={saveCustomStatus}>✓</button>
+              <div className="status-menu-card">
+                <div className="status-menu-header">
+                  <div>
+                    <div className="status-menu-title">Status</div>
+                    <div className="status-menu-subtitle">Switch presence or set a quick custom status.</div>
                   </div>
-                ) : (
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}
-                    onClick={() => { setStatusDraft(customStatus); setShowStatusEdit(true); }}>
-                    <span style={{ flex: 1, fontSize: 12, color: customStatus ? "var(--text)" : "var(--text-muted)" }}>
-                      {customStatus || "Set a status..."}
-                    </span>
-                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>✏️</span>
-                  </div>
-                )}
-              </div>
-              {/* Presence options */}
-              {(["ONLINE", "IDLE", "DND", "OFFLINE"] as Presence[]).map((p) => (
-                <div key={p} className="status-menu-item" onClick={() => void updatePresence(p)}>
-                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: PRESENCE_COLORS[p], display: "inline-block", flexShrink: 0 }} />
-                  {PRESENCE_LABELS[p]}
+                  <button className="status-menu-close" onClick={() => setShowPresenceMenu(false)}>✕</button>
                 </div>
-              ))}
-              {/* PTT / Voice Settings */}
-              <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
-              <div style={{ padding: "4px 10px", fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>Voice Settings</div>
-              <div className="status-menu-item" onClick={() => { setPttEnabled(e => !e); }}>
-                <span>{pttEnabled ? "✅" : "☐"}</span> Push-to-Talk
-              </div>
-              <div className="status-menu-item" onClick={() => setNoiseSuppress(n => !n)}>
-                <span>{noiseSuppress ? "✅" : "☐"}</span> Noise Suppression
-              </div>
-              <div style={{ padding: "4px 10px", display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Quality:</span>
-                {(["LOW", "MED", "HIGH"] as const).map(q => (
-                  <button key={q} onClick={() => setStreamQuality(q)}
-                    style={{ fontSize: 10, padding: "2px 6px", borderRadius: 4, fontWeight: 700, border: "1px solid", borderColor: streamQuality === q ? "var(--accent)" : "var(--border)", color: streamQuality === q ? "var(--accent)" : "var(--text-muted)", background: "transparent" }}>
-                    {q}
-                  </button>
-                ))}
-              </div>
-              <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
-              <div className="status-menu-item" style={{ color: "var(--danger)" }} onClick={() => { setShowPresenceMenu(false); void logout(); }}>
-                🚪 Log out
+
+                <div className="status-menu-section">
+                  <div className="status-menu-label">Custom Status</div>
+                  {showStatusEdit ? (
+                    <div className="status-status-edit-row">
+                      <input value={statusDraft} onChange={e => setStatusDraft(e.target.value)} placeholder="What's on your mind?"
+                        autoFocus onKeyDown={e => { if (e.key === "Enter") void saveCustomStatus(); if (e.key === "Escape") { setShowStatusEdit(false); } }}
+                        className="status-status-input" />
+                      <button className="btn btn-primary status-status-save" onClick={saveCustomStatus}>Save</button>
+                    </div>
+                  ) : (
+                    <div className="status-status-preview" onClick={() => { setStatusDraft(customStatus); setShowStatusEdit(true); }}>
+                      <span>{customStatus || "Set a status..."}</span>
+                      <span className="status-status-edit-icon">✏️</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="status-menu-section">
+                  <div className="status-menu-label">Presence</div>
+                  <div className="status-presence-grid">
+                    {(["ONLINE", "IDLE", "DND", "OFFLINE"] as Presence[]).map((p) => (
+                      <button key={p} className={`status-presence-pill ${presence === p ? "active" : ""}`} onClick={() => void updatePresence(p)}>
+                        <span className="status-presence-dot" style={{ background: PRESENCE_COLORS[p] }} />
+                        <span>{PRESENCE_LABELS[p]}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="status-menu-section status-menu-section--accented">
+                  <div className="status-menu-label">Voice Settings</div>
+                  <div className="status-toggle-grid">
+                    <button className={`status-toggle ${pttEnabled ? "active" : ""}`} onClick={() => setPttEnabled(e => !e)}>
+                      <span>{pttEnabled ? "✓" : ""}</span>
+                      Push-to-Talk
+                    </button>
+                    <button className={`status-toggle ${noiseSuppress ? "active" : ""}`} onClick={() => setNoiseSuppress(n => !n)}>
+                      <span>{noiseSuppress ? "✓" : ""}</span>
+                      Noise Suppression
+                    </button>
+                  </div>
+                  <div className="status-quality-row">
+                    <span className="status-menu-label">Quality</span>
+                    <div className="status-quality-buttons">
+                      {(["LOW", "MED", "HIGH"] as const).map(q => (
+                        <button key={q} onClick={() => setStreamQuality(q)} className={streamQuality === q ? "quality-btn active" : "quality-btn"}>{q}</button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <button className="status-menu-logout" onClick={() => { setShowPresenceMenu(false); void logout(); }}>
+                  🚪 Log out
+                </button>
               </div>
             </div>
           )}

@@ -20,6 +20,7 @@ import { StatsPage } from "./pages/StatsPage.js";
 import { UpdatePage } from "./pages/UpdatePage.js";
 import { SupportPage } from "./pages/SupportPage.js";
 import { DownloadPage } from "./pages/DownloadPage.js";
+import { PremiumPage } from "./pages/PremiumPage.js";
 
 
 function Protected({ children, maintenanceMode }: { children: React.ReactNode, maintenanceMode: boolean }) {
@@ -151,6 +152,14 @@ export default function App() {
       />
       <Route path="/support" element={<SupportPage />} />
       <Route path="/download" element={<DownloadPage />} />
+      <Route
+        path="/premium"
+        element={
+          <Protected maintenanceMode={maintenanceMode}>
+            <PremiumPage />
+          </Protected>
+        }
+      />
 
       <Route
         path="/app/*"

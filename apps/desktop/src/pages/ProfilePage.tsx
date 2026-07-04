@@ -388,13 +388,48 @@ export function ProfilePage() {
 
                 {/* Premium Status */}
                 {me.isPremium ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "rgba(140,94,255,0.08)", border: "1px solid rgba(140,94,255,0.2)", borderRadius: 10 }}>
-                    <span style={{ fontSize: 20 }}>💎</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#8C5EFF" }}>Lensly Premium Active</div>
-                      <div style={{ fontSize: 11, color: "var(--text-muted)" }}>You have access to all premium features</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "12px 14px", background: "rgba(140,94,255,0.08)", border: "1px solid rgba(140,94,255,0.2)", borderRadius: 10 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 20 }}>💎</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#8C5EFF" }}>Lensly Premium Active</div>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)" }}>You have access to all premium features</div>
+                      </div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
+                    <button
+                      onClick={async () => {
+                        if (confirm("Are you sure you want to cancel your Premium subscription? Your account will be downgraded to the free tier immediately.")) {
+                          try {
+                            setSaving(true);
+                            await updateDoc(doc(db, "users", me.id), {
+                              isPremium: false,
+                              premiumPlan: null,
+                              premiumSince: null,
+                              premiumPaymentName: null,
+                              premiumPaymentLast4: null
+                            });
+                            await refreshMe();
+                            alert("Subscription cancelled. Your account has been downgraded to the free tier.");
+                          } catch (err) {
+                            alert("Failed to downgrade: " + err);
+                          } finally {
+                            setSaving(false);
+                          }
+                        }
+                      }}
+                      disabled={saving}
+                      style={{
+                        width: "100%", padding: "8px", borderRadius: 8,
+                        background: "rgba(239, 68, 68, 0.15)", border: "1px solid rgba(239, 68, 68, 0.3)",
+                        color: "#EF4444", fontSize: 12, fontWeight: 700, cursor: "pointer",
+                        transition: "all 0.15s"
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "rgba(239, 68, 68, 0.25)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(239, 68, 68, 0.15)"; }}
+                    >
+                      {saving ? "Downgrading..." : "Cancel Subscription (Downgrade)"}
+                    </button>
                   </div>
                 ) : (
                   <Link to="/premium" style={{ textDecoration: "none", display: "block" }}>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../lib/auth-store.js";
 import {
   collection, query, orderBy, onSnapshot, addDoc, doc, updateDoc,
@@ -322,6 +322,7 @@ function playNotificationSound(soundType: string, volume = 0.08) {
 // ── Main Component ─────────────────────────────────────────────────────────
 export function MainLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const me = useAuthStore((s) => s.me);
   const logout = useAuthStore((s) => s.logout);
 
@@ -2654,24 +2655,24 @@ export function MainLayout() {
         </div>
 
         {/* Nav links */}
-        <div style={{ padding: "0 8px 4px", display: "flex", flexDirection: "column", gap: 2 }}>
-          <Link className="btn btn-ghost" to="/profile" style={{ justifyContent: "flex-start", fontSize: 13, gap: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+        <div style={{ padding: "0 8px 4px", display: "flex", flexDirection: "column", gap: 3 }}>
+          <Link className={`sidebar-nav-item item-profile ${location.pathname === "/profile" ? "active" : ""}`} to="/profile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
             Profile
           </Link>
-          <Link className="btn btn-ghost" to="/settings" style={{ justifyContent: "flex-start", fontSize: 13, gap: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9" /></svg>
+          <Link className={`sidebar-nav-item item-settings ${location.pathname === "/settings" ? "active" : ""}`} to="/settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9" /></svg>
             Settings
           </Link>
           {me?.role && ["TRIAL_MODERATOR", "MODERATOR", "MODERATOR_PLUS", "ADMIN", "MANAGER", "DEVELOPER", "CO_OWNER", "OWNER"].includes(me.role.toUpperCase()) && (
-            <Link className="btn btn-ghost" to="/admin" style={{ justifyContent: "flex-start", fontSize: 13, gap: 8, color: "#06B6D4" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
+            <Link className={`sidebar-nav-item item-admin ${location.pathname === "/admin" ? "active" : ""}`} to="/admin">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
               Admin Panel
             </Link>
           )}
 
-          <Link className="btn btn-ghost" to="/support" style={{ justifyContent: "flex-start", fontSize: 13, gap: 8, color: "#34D399" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+          <Link className={`sidebar-nav-item item-support ${location.pathname === "/support" ? "active" : ""}`} to="/support">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
             Help & Support
           </Link>
         </div>

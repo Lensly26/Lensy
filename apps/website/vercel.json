@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/Lensly-Setup-2.9.2.exe",
+      "destination": "/Lensly-Setup-2.9.2.exe"
+    },
+    {
+      "source": "/Lensly-2.9.2.dmg",
+      "destination": "/Lensly-2.9.2.dmg"
+    },
+    {
+      "source": "/Lensly.exe",
+      "destination": "/Lensly.exe"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

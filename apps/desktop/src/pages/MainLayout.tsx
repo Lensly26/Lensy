@@ -3456,110 +3456,107 @@ export function MainLayout() {
       {/* ─── Server Boost Modal ─── */}
       {showBoostModal && activeGuild && (
         <div className="profile-modal-overlay" onClick={() => setShowBoostModal(false)}>
-          <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border)", borderRadius: 20, padding: 36, width: 460 }} onClick={e => e.stopPropagation()}>
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <div style={{ fontSize: 48, marginBottom: 8 }}>🚀</div>
-              <div style={{ fontSize: 22, fontWeight: 800 }}>Boost {activeGuild.name}</div>
-              <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 6 }}>Support this server and unlock exclusive perks for the community!</div>
+          <div className="boost-modal-card" onClick={e => e.stopPropagation()}>
+            <div className="boost-modal-header">
+              <div className="boost-modal-icon">🚀</div>
+              <div>
+                <div className="boost-modal-title">Boost {activeGuild.name}</div>
+                <div className="boost-modal-subtitle">Support this server and unlock exclusive perks for the community!</div>
+              </div>
             </div>
 
-            {/* Boost progress */}
-            <div style={{ background: "var(--bg-deep)", borderRadius: 12, padding: 16, marginBottom: 20 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 700 }}>Current Boosts</span>
-                <span style={{ fontWeight: 800, color: "#FF5EAD" }}>{activeGuild.boostCount ?? 0}</span>
+            <div className="boost-progress-card">
+              <div className="boost-progress-top">
+                <span>Current Boosts</span>
+                <span>{activeGuild.boostCount ?? 0}</span>
               </div>
-              <div style={{ height: 8, background: "var(--border)", borderRadius: 4, overflow: "hidden" }}>
-                <div style={{ height: "100%", background: "linear-gradient(90deg, #8C5EFF, #FF5EAD)", borderRadius: 4, width: `${Math.min(((activeGuild.boostCount ?? 0) / 14) * 100, 100)}%`, transition: "width 0.5s" }} />
+              <div className="boost-progress-bar-shell">
+                <div className="boost-progress-bar-fill" style={{ width: `${Math.min(((activeGuild.boostCount ?? 0) / 14) * 100, 100)}%` }} />
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 11, color: "var(--text-muted)" }}>
-                <span>0</span><span>2 (Lv 1)</span><span>7 (Lv 2)</span><span>14 (Lv 3)</span>
+              <div className="boost-progress-steps">
+                <span>0</span>
+                <span>2 (Lv 1)</span>
+                <span>7 (Lv 2)</span>
+                <span>14 (Lv 3)</span>
               </div>
             </div>
 
             {showBoostCheckout ? (
-              <div style={{ display: "grid", gap: 14 }}>
-                <div style={{ textAlign: "center", marginBottom: 12 }}>
-                  <div style={{ fontSize: 16, fontWeight: 800 }}>💳 Complete Server Boost Payment</div>
-                  <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
-                    Enter simulated payment details to purchase a Boost for <strong>{activeGuild.name}</strong>.
-                  </p>
+              <div className="boost-checkout-panel">
+                <div className="boost-checkout-header">
+                  <div className="boost-checkout-title">💳 Complete Server Boost Payment</div>
+                  <div className="boost-checkout-copy">Enter simulated payment details to purchase a Boost for <strong>{activeGuild.name}</strong>.</div>
                 </div>
+
                 <div className="field">
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 6 }}>Cardholder Name</label>
+                  <label>Cardholder Name</label>
                   <input
                     value={checkoutName}
                     onChange={(e) => setCheckoutName(e.target.value)}
                     placeholder="John Doe"
-                    style={{ width: "100%", padding: "10px 14px", borderRadius: 10, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "#fff", fontSize: 14 }}
                   />
                 </div>
                 <div className="field">
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 6 }}>Card Number</label>
+                  <label>Card Number</label>
                   <input
                     value={checkoutCard}
                     onChange={(e) => setCheckoutCard(e.target.value.replace(/\D/g, "").slice(0, 16))}
                     placeholder="4111 2222 3333 4444"
                     maxLength={16}
-                    style={{ width: "100%", padding: "10px 14px", borderRadius: 10, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "#fff", fontSize: 14 }}
                   />
                 </div>
-                <div style={{ display: "flex", gap: 12 }}>
-                  <div className="field" style={{ flex: 1 }}>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 6 }}>Expiration (MM/YY)</label>
+                <div className="boost-checkout-grid">
+                  <div className="field">
+                    <label>Expiration (MM/YY)</label>
                     <input
                       value={checkoutExpiry}
                       onChange={(e) => setCheckoutExpiry(e.target.value.slice(0, 5))}
                       placeholder="12/28"
                       maxLength={5}
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 10, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "#fff", fontSize: 14 }}
                     />
                   </div>
-                  <div className="field" style={{ flex: 1 }}>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 6 }}>CVV</label>
+                  <div className="field">
+                    <label>CVV</label>
                     <input
                       value={checkoutCvv}
                       onChange={(e) => setCheckoutCvv(e.target.value.replace(/\D/g, "").slice(0, 3))}
                       placeholder="123"
                       maxLength={3}
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 10, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "#fff", fontSize: 14 }}
                     />
                   </div>
                 </div>
 
-                <div style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", padding: 12, borderRadius: 8, fontSize: 11, color: "#F59E0B", marginTop: 8, display: "flex", gap: 6, alignItems: "center" }}>
+                <div className="boost-checkout-note">
                   <span>🔒</span>
                   <span>Billing is disabled. Payment gateway integration coming soon!</span>
                 </div>
 
-                <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-                  <button className="btn btn-ghost" style={{ flex: 1, padding: 12 }} onClick={() => setShowBoostCheckout(false)}>
+                <div className="boost-checkout-actions">
+                  <button className="btn btn-ghost" onClick={() => setShowBoostCheckout(false)}>
                     Back
                   </button>
-                  <button className="btn btn-primary" style={{ flex: 1, padding: 12 }} onClick={() => void boostServer()}>
+                  <button className="btn btn-primary" onClick={() => void boostServer()}>
                     Confirm & Pay ($4.99)
                   </button>
                 </div>
               </div>
             ) : (
               <>
-                {/* Perks */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+                <div className="boost-tier-grid">
                   {BOOST_PERKS.map(tier => (
-                    <div key={tier.level} style={{ background: "var(--bg-deep)", borderRadius: 10, padding: "12px 14px", border: `1px solid ${(activeGuild.boostCount ?? 0) >= tier.count ? tier.color : "var(--border)"}`, opacity: (activeGuild.boostCount ?? 0) >= tier.count ? 1 : 0.6 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                        <span style={{ fontWeight: 800, color: tier.color }}>{tier.label}</span>
-                        <span style={{ fontSize: 11, color: "var(--text-muted)" }}>({tier.count} boosts)</span>
-                        {(activeGuild.boostCount ?? 0) >= tier.count && <span style={{ marginLeft: "auto", fontSize: 11, color: "#34D399", fontWeight: 700 }}>✓ Unlocked</span>}
+                    <div key={tier.level} className={`boost-tier-card ${(activeGuild.boostCount ?? 0) >= tier.count ? "unlocked" : ""}`}>
+                      <div className="boost-tier-header">
+                        <span className="boost-tier-title" style={{ color: tier.color }}>{tier.label}</span>
+                        <span className="boost-tier-count">{tier.count} boosts</span>
                       </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {tier.perks.map(p => <span key={p} style={{ fontSize: 11, background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 20 }}>{p}</span>)}
+                      <div className="boost-tier-perks">
+                        {tier.perks.map(p => <span key={p} className="boost-perk-pill">{p}</span>)}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <button className="btn btn-primary" style={{ width: "100%", padding: 14, fontSize: 15, fontWeight: 800 }} onClick={() => void boostServer()}>
+                <button className="boost-action-btn" onClick={() => void boostServer()}>
                   🚀 Boost This Server
                 </button>
               </>

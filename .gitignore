@@ -3,7 +3,7 @@ dist
 build
 out
 /public
-/apps/website/public
+# /apps/website/public
 /apps/website/out
 /apps/website/dist
 /apps/website/build

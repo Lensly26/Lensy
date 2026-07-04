@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/logo.png",
+      "destination": "/logo.png"
+    },
+    {
       "source": "/Lensly-Setup-2.9.2.exe",
       "destination": "/Lensly-Setup-2.9.2.exe"
     },

@@ -813,20 +813,14 @@ a { color: var(--accent); text-decoration: none; }
 
 @media (max-width: 920px) {
   .quick-nav-group {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    z-index: 220;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
-    gap: 8px;
-    padding: 10px;
-    background: rgba(17, 20, 34, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(18px);
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 0 6px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
   }
 
   .quick-nav-group > a {
@@ -834,23 +828,22 @@ a { color: var(--accent); text-decoration: none; }
   }
 
   .quick-nav-card {
-    justify-content: center;
-    min-height: 54px;
-    padding: 10px 8px;
-    border-radius: 16px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 14px;
   }
 
   .quick-nav-card .quick-nav-label {
-    display: none;
+    display: inline;
   }
 
   .quick-nav-card .quick-nav-chevron {
-    display: none;
+    display: block;
   }
 
   .quick-nav-icon {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
   }
 }
 

@@ -119,7 +119,7 @@ function Avatar({ user, size = 40, isSpeaking = false }: { user: { id?: string |
     ? { border: "2px solid #34D399", boxShadow: "0 0 6px #34D399", boxSizing: "border-box" as const }
     : {};
 
-  const isSystemBot = user.id === "Lensly_system" || user.username === "Lensly_system" || user.username?.toLowerCase() === "Lensly";
+  const isSystemBot = user.id === "Lensly_system" || user.username === "Lensly_system" || user.username?.toLowerCase() === "lensly";
   const avatarSrc = isSystemBot ? "/logo.png" : user.avatarUrl;
 
   if (avatarSrc) {
@@ -2596,20 +2596,20 @@ export function MainLayout() {
                         setActiveChannelId(dmId);
                       }}
                     >
-                      <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-                        <div style={{
-                          background: "linear-gradient(135deg, #5865F2, #4752C4)",
+                      <div style={{ position: "relative", display: "flex", alignItems: "center", flexShrink: 0 }}>
+                        <img src="/logo.png" alt="Lensly" style={{
+                          width: 26,
+                          height: 26,
                           borderRadius: "50%",
-                          width: 24,
-                          height: 24,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 11,
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
-                        }}>
-                          🛡️
-                        </div>
+                          objectFit: "cover",
+                          boxShadow: "0 0 8px rgba(79,124,255,0.5)",
+                          border: "1px solid rgba(255,255,255,0.12)"
+                        }} />
+                        <span style={{
+                          position: "absolute", bottom: -2, right: -2,
+                          width: 9, height: 9, borderRadius: "50%",
+                          background: "#10B981", border: "1.5px solid var(--bg-panel)"
+                        }} />
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "left", flex: 1 }}>
                         <span style={{ fontWeight: 700, fontSize: 13, color: "#fff", display: "flex", alignItems: "center", gap: 4 }}>
@@ -2810,19 +2810,20 @@ export function MainLayout() {
         <div className="chat-header">
           {isLenslyDm ? (
             <>
-              <div style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
-                borderRadius: "50%",
-                width: 26,
-                height: 26,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 12,
-                boxShadow: "0 0 10px rgba(16, 185, 129, 0.4)",
-                flexShrink: 0
-              }}>
-                🛡️
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <img src="/logo.png" alt="Lensly" style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  boxShadow: "0 0 12px rgba(79,124,255,0.45)",
+                  border: "1.5px solid rgba(255,255,255,0.15)"
+                }} />
+                <span style={{
+                  position: "absolute", bottom: -1, right: -1,
+                  width: 10, height: 10, borderRadius: "50%",
+                  background: "#10B981", border: "2px solid var(--bg-elevated)"
+                }} />
               </div>
               <span className="chat-header-name" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 Lensly SYSTEM

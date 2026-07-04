@@ -68,6 +68,7 @@ export function PremiumPage() {
   const [processing, setProcessing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showStripeComingSoon, setShowStripeComingSoon] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
@@ -168,16 +169,21 @@ export function PremiumPage() {
       if (response.ok) {
         const data = await response.json();
         if (data.url) {
-          window.location.href = data.url;
-          return;
+          if (data.isMock) {
+            setShowStripeComingSoon(true);
+            return;
+          } else {
+            window.location.href = data.url;
+            return;
+          }
         }
       }
       
       // Fallback
-      setShowCheckout(true);
+      setShowStripeComingSoon(true);
     } catch (err) {
-      console.warn("Failed to contact Stripe API, falling back to local checkout:", err);
-      setShowCheckout(true);
+      console.warn("Failed to contact Stripe API, showing coming soon status:", err);
+      setShowStripeComingSoon(true);
     } finally {
       setLoadingCheckout(false);
     }
@@ -252,6 +258,68 @@ export function PremiumPage() {
             }}>
               View My Profile →
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Stripe Coming Soon Modal */}
+      {showStripeComingSoon && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 1000,
+          background: "rgba(0,0,0,0.8)", backdropFilter: "blur(12px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: 20
+        }}>
+          <div style={{
+            width: "100%", maxWidth: 440,
+            background: "rgba(25,28,47,0.95)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 24, padding: "32px",
+            boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            boxSizing: "border-box"
+          }}>
+            <div style={{ fontSize: 56, marginBottom: 16 }}>💳</div>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: "#fff", margin: "0 0 10px 0" }}>Stripe Payment Gateway</h3>
+            <div style={{
+              display: "inline-block", padding: "4px 10px", borderRadius: 6,
+              background: "rgba(245, 158, 11, 0.15)", border: "1px solid rgba(245, 158, 11, 0.3)",
+              color: "#F59E0B", fontSize: 11, fontWeight: 800, textTransform: "uppercase",
+              letterSpacing: "0.05em", marginBottom: 16
+            }}>
+              Coming Soon
+            </div>
+            <p style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.6, margin: "0 0 24px 0" }}>
+              Real-money premium purchases are currently under construction while Stripe is being configured by the development team. 
+            </p>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <button onClick={() => setShowStripeComingSoon(false)} style={{
+                width: "100%", padding: "12px", borderRadius: 12,
+                background: "linear-gradient(135deg, #8C5EFF, #FF5EAD)",
+                border: "none", color: "#fff", fontSize: 14, fontWeight: 700,
+                cursor: "pointer", boxShadow: "0 4px 16px rgba(140,94,255,0.3)"
+              }}>
+                Close
+              </button>
+              
+              <button 
+                onClick={() => {
+                  setShowStripeComingSoon(false);
+                  setShowCheckout(true);
+                }} 
+                style={{
+                  width: "100%", padding: "10px", borderRadius: 12,
+                  background: "transparent", border: "1px solid rgba(255,255,255,0.15)",
+                  color: "var(--text-muted)", fontSize: 12, fontWeight: 600,
+                  cursor: "pointer", transition: "all 0.15s"
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
+                onMouseLeave={e => { e.currentTarget.style.color = "var(--text-muted)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; }}
+              >
+                Bypass & Test mock checkout
+              </button>
+            </div>
           </div>
         </div>
       )}

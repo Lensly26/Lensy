@@ -939,7 +939,7 @@ export function MainLayout() {
   }, [activeVcChannelId, me?.id]);
 
   // ── Preferences settings for sound
-  const [prefs, setPrefs] = useState<{ soundEnabled: boolean; notificationSound: string; dmSound: string; mentionSound: string; serverSound: string; callSound: string; vcSound: string; dmVolume: number; mentionVolume: number; serverVolume: number; callVolume: number; vcVolume: number; masterVolume: number; dndEnabled: boolean; mutedGuildIds: string[] }>({ soundEnabled: true, notificationSound: "chime", dmSound: "chime", mentionSound: "alert", serverSound: "chime", callSound: "playful", vcSound: "beep", dmVolume: 0.8, mentionVolume: 1.0, serverVolume: 0.6, callVolume: 0.9, vcVolume: 0.7, masterVolume: 0.8, dndEnabled: false, mutedGuildIds: [] });
+  const [prefs, setPrefs] = useState<{ soundEnabled: boolean; notificationSound: string; dmSound: string; mentionSound: string; serverSound: string; callSound: string; vcSound: string; dmVolume: number; mentionVolume: number; serverVolume: number; callVolume: number; vcVolume: number; masterVolume: number; dndEnabled: boolean; mutedGuildIds: string[]; allowFriendDms: boolean }>({ soundEnabled: true, notificationSound: "chime", dmSound: "chime", mentionSound: "alert", serverSound: "chime", callSound: "playful", vcSound: "beep", dmVolume: 0.8, mentionVolume: 1.0, serverVolume: 0.6, callVolume: 0.9, vcVolume: 0.7, masterVolume: 0.8, dndEnabled: false, mutedGuildIds: [], allowFriendDms: false });
   useEffect(() => {
     if (!me?.id) return;
     const unsub = onSnapshot(doc(db, "settings", me.id), (docSnap) => {
@@ -949,6 +949,7 @@ export function MainLayout() {
           ...prev,
           soundEnabled: data.soundEnabled !== false,
           notificationSound: data.notificationSound || "chime",
+          allowFriendDms: data.allowFriendDms === true,
         }));
       }
     });
@@ -1717,6 +1718,19 @@ export function MainLayout() {
     if (!me) return;
     const otherUser = allUsers.find(u => u.username === otherUsername);
     if (!otherUser) return;
+
+    try {
+      const settingsSnap = await getDoc(doc(db, "settings", otherUser.id));
+      const settings = settingsSnap.exists() ? settingsSnap.data() : null;
+      const friendOnly = settings?.allowFriendDms === true;
+      if (friendOnly && !otherUser.friends?.includes(me.id)) {
+        alert("This user only accepts direct messages from friends.");
+        return;
+      }
+    } catch (error) {
+      console.warn("Failed to check DM permissions:", error);
+    }
+
     const dmId = "dm_" + [me.username, otherUsername].sort().join("_");
     await setDoc(doc(db, "dm_channels", dmId), {
       id: dmId,

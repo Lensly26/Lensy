@@ -36,6 +36,7 @@ type Prefs = {
   dndEnabled: boolean;
   soundPack: string;
   mutedGuildIds: string[];
+  allowFriendDms: boolean;
 };
 
 const DEFAULT_PREFS: Prefs = {
@@ -70,6 +71,7 @@ const DEFAULT_PREFS: Prefs = {
   dndEnabled: false,
   soundPack: "classic",
   mutedGuildIds: [],
+  allowFriendDms: false,
 };
 
 type TabKey = "notifications" | "appearance" | "privacy" | "voice" | "sessions";
@@ -498,7 +500,7 @@ export function SettingsPage() {
                     <div style={{ display: "grid", gap: 18 }}>
                       {settingRow("Show online status", "Allow other users to see when you are online.", <Toggle checked={true} onChange={() => {}} />)}
                       {settingRow("Allow DMs from members", "Permit direct messages from server members.", <Toggle checked={true} onChange={() => {}} />)}
-                      {settingRow("Allow DMs from friends", "Only accept direct messages from friends.", <Toggle checked={false} onChange={() => {}} />)}
+                      {settingRow("Allow DMs from friends", "Only accept direct messages from friends.", <Toggle checked={prefs.allowFriendDms} onChange={(value) => handleSave({ allowFriendDms: value })} />)}
 
                       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 16, display: "grid", gap: 12 }}>
                         <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.14em" }}>Two-factor authentication</div>

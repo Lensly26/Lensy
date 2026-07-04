@@ -601,16 +601,40 @@ a { color: var(--accent); text-decoration: none; }
 .ctx-btn-danger:hover { background: rgba(239,68,68,0.1); }
 
 /* ─── PROFILE MODAL ─── */
-.profile-modal-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); animation: fadeIn 0.15s ease; }
+.profile-modal-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); animation: fadeIn 0.18s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.profile-modal { width: 360px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; animation: scaleIn 0.2s ease; }
-@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-.profile-banner { height: 100px; position: relative; }
-.profile-avatar-wrap { position: absolute; left: 16px; bottom: -24px; }
-.profile-body { padding: 36px 20px 20px; }
-.profile-username { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-.profile-discriminator { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
-.profile-bio { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 12px; background: var(--bg-deep); border-radius: 8px; }
+.profile-modal { width: min(520px, calc(100vw - 40px)); background: rgba(13,15,26,0.96); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; overflow: hidden; animation: scaleIn 0.18s ease; box-shadow: 0 30px 80px rgba(0,0,0,0.55); }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+.profile-banner { height: 140px; position: relative; overflow: hidden; }
+.profile-avatar-wrap { position: absolute; left: 28px; bottom: -36px; }
+.profile-body { padding: 48px 28px 28px; }
+.profile-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 14px; }
+.profile-name { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.05; }
+.profile-handle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.profile-close { padding: 8px 12px; border-radius: 14px; }
+.profile-meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; color: var(--text-muted); font-size: 13px; }
+.profile-presence { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; }
+.profile-presence .presence-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.profile-status-line { font-style: italic; }
+.profile-badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.profile-badge-pill { display: inline-flex; align-items: center; justify-content: center; border: 1px solid; border-radius: 999px; padding: 6px 12px; font-size: 11px; font-weight: 700; }
+.profile-section { margin-top: 20px; }
+.profile-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.12em; }
+.profile-bio { font-size: 14px; color: #e5e7eb; line-height: 1.7; padding: 18px; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); }
+.profile-role-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.profile-role-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; }
+.role-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.profile-notes-section { margin-top: 24px; }
+.profile-notes-input { width: 100%; min-height: 90px; padding: 14px; border-radius: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 13px; resize: vertical; }
+.profile-action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.profile-action-btn { width: 100%; }
+.profile-friend-btn { color: #34D399; }
+@media (max-width: 620px) {
+  .profile-modal { width: calc(100vw - 24px); }
+  .profile-body { padding: 36px 18px 18px; }
+  .profile-header { flex-direction: column; align-items: flex-start; }
+  .profile-action-grid { grid-template-columns: 1fr; }
+}
 
 /* ─── Server templates ─── */
 .template-card {

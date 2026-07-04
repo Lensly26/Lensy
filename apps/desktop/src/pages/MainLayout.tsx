@@ -4300,91 +4300,51 @@ export function MainLayout() {
         <div className="profile-modal-overlay" onClick={() => setSelectedUserProfile(null)}>
           <div className="profile-modal" onClick={e => e.stopPropagation()}>
             <div className="profile-banner" style={{ background: "linear-gradient(135deg, #4F7CFF, #8C5EFF, #FF5EAD)" }}>
-              <div className="profile-avatar-wrap"><Avatar user={selectedUserProfile} size={70} /></div>
+              <div className="profile-avatar-wrap"><Avatar user={selectedUserProfile} size={84} /></div>
             </div>
             <div className="profile-body">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+              <div className="profile-header">
                 <div>
-                  <div style={{ fontSize: 20, fontWeight: 800 }}>{selectedUserProfile.displayName ?? selectedUserProfile.username}</div>
-                  <div style={{ fontSize: 13, color: "var(--text-muted)" }}>@{selectedUserProfile.username}</div>
+                  <div className="profile-name">{selectedUserProfile.displayName ?? selectedUserProfile.username}</div>
+                  <div className="profile-handle">@{selectedUserProfile.username}</div>
                 </div>
-                <button className="btn btn-ghost" onClick={() => setSelectedUserProfile(null)} style={{ padding: "4px 8px" }}>✕</button>
+                <button className="btn btn-ghost profile-close" onClick={() => setSelectedUserProfile(null)}>✕</button>
               </div>
 
-              {/* Status */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12, fontSize: 12, color: "var(--text-muted)" }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: PRESENCE_COLORS[(selectedUserProfile.presenceStatus as Presence) || "OFFLINE"] }} />
-                <span>{selectedUserProfile.presenceStatus || "OFFLINE"}</span>
-                {selectedUserProfile.statusLine && <span>— {selectedUserProfile.statusLine}</span>}
+              <div className="profile-meta-row">
+                <div className="profile-presence">
+                  <span className="presence-dot" style={{ background: PRESENCE_COLORS[(selectedUserProfile.presenceStatus as Presence) || "OFFLINE"] }} />
+                  <span>{selectedUserProfile.presenceStatus || "OFFLINE"}</span>
+                </div>
+                {selectedUserProfile.statusLine && <div className="profile-status-line">{selectedUserProfile.statusLine}</div>}
               </div>
 
-              {/* Badges */}
               {selectedUserProfile.userBadges && selectedUserProfile.userBadges.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+                <div className="profile-badge-row">
                   {selectedUserProfile.userBadges.map((b: any) => {
                     const s = BADGE_STYLE[b.badge?.slug];
                     if (!s) return null;
-                    return <span key={b.badge.slug} style={{ background: s.bg, color: s.color, borderRadius: 999, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>{s.label}</span>;
+                    return <span key={b.badge.slug} className="profile-badge-pill" style={{ background: s.bg, color: s.color, borderColor: s.border }}>{s.label}</span>;
                   })}
                 </div>
               )}
 
-              {/* Blacklist indicator — HR only */}
-              {(() => {
-                const getRoleWeight = (role?: string | null) => {
-                  switch (role?.toUpperCase()) {
-                    case "OWNER": return 100;
-                    case "CO_OWNER": return 90;
-                    case "EXECUTIVE_DIRECTOR": return 85;
-                    case "HEAD_OF_STAFF": return 80;
-                    case "SENIOR_ADMIN": return 75;
-                    case "DEVELOPER": return 70;
-                    case "MANAGER": return 70;
-                    case "ADMIN": return 65;
-                    case "HEAD_MODERATOR": return 55;
-                    case "TRUST_AND_SAFETY": return 50;
-                    case "MODERATOR_PLUS": return 42;
-                    case "HEAD_TRAINER": return 45;
-                    case "MODERATOR": return 40;
-                    case "TRAINER": return 35;
-                    case "RECRUITER": return 32;
-                    case "TRIAL_MODERATOR": return 30;
-                    case "SUPPORT_AGENT": return 25;
-                    default: return 0;
-                  }
-                };
-                const isHR = getRoleWeight(me?.role) >= 60;
-                const isBlacklisted = selectedUserProfile.staffBlacklisted === true;
-                if (!isHR || !isBlacklisted) return null;
-                return (
-                  <div style={{ marginTop: 10, background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, padding: "8px 12px", display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 16 }}>🚫</span>
-                    <div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: "#EF4444" }}>STAFF BLACKLISTED</div>
-                      <div style={{ fontSize: 11, color: "var(--text-muted)" }}>This user has been blacklisted from the staff team</div>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Bio */}
-              <div style={{ marginTop: 14 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 6 }}>About Me</div>
+              <div className="profile-section">
+                <div className="profile-section-title">About</div>
                 <div className="profile-bio">{selectedUserProfile.bio || "This user hasn't written a bio yet."}</div>
               </div>
 
-              {/* Server roles */}
               {activeGuild && (() => {
                 const assignedRoleIds = (activeGuild.memberRoles || {})[selectedUserProfile.id] || [];
                 const userRoles = (activeGuild.roles || []).filter(r => assignedRoleIds.includes(r.id) && r.id !== "default");
                 if (!userRoles.length) return null;
                 return (
-                  <div style={{ marginTop: 14 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 6 }}>Roles</div>
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <div className="profile-section">
+                    <div className="profile-section-title">Server Roles</div>
+                    <div className="profile-role-list">
                       {userRoles.map(role => (
-                        <span key={role.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "var(--bg-deep)", border: "1px solid " + role.color, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 700, color: role.color }}>
-                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: role.color }} />{role.name}
+                        <span key={role.id} className="profile-role-pill" style={{ borderColor: role.color, color: role.color }}>
+                          <span className="role-dot" style={{ background: role.color }} />{role.name}
                         </span>
                       ))}
                     </div>
@@ -4396,41 +4356,41 @@ export function MainLayout() {
                 const isPlatformStaff = me?.role && ["TRIAL_MODERATOR", "MODERATOR", "ADMIN", "MANAGER", "DEVELOPER", "CO_OWNER", "OWNER"].includes(me.role.toUpperCase());
                 if (!isPlatformStaff) return null;
                 return (
-                  <div style={{ marginTop: 14, borderTop: "1px solid var(--border)", paddingTop: 14 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#F59E0B", marginBottom: 6 }}>🛡️ Internal Staff Notes</div>
+                  <div className="profile-section profile-notes-section">
+                    <div className="profile-section-title">🛡️ Internal Staff Notes</div>
                     <textarea
                       defaultValue={selectedUserProfile.staffNotes || ""}
                       onBlur={async (e) => {
                         await updateDoc(doc(db, "users", selectedUserProfile.id), { staffNotes: e.target.value });
                       }}
-                      placeholder="Type internal staff notes here... (auto-saves on blur)"
-                      style={{ width: "100%", minHeight: 60, padding: 8, borderRadius: 8, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "#fff", fontSize: 12, resize: "vertical", fontFamily: "inherit" }}
+                      placeholder="Type internal staff notes here..."
+                      className="profile-notes-input"
                     />
                   </div>
                 );
               })()}
 
-              {selectedUserProfile.id !== me?.id && (
-                <div style={{ display: "flex", gap: 10, marginTop: 20, flexDirection: "column" }}>
-                  <button className="btn btn-primary" style={{ width: "100%" }} onClick={async () => {
-                    await ensureDmChannel(selectedUserProfile.username);
-                    setActiveGuildId(null); setSelectedUserProfile(null);
-                    setActiveChannelId("dm_" + [me?.username || "", selectedUserProfile.username].sort().join("_"));
-                  }}>💬 Send Message</button>
-                  {!myFriends.includes(selectedUserProfile.id) ? (
-                    <button className="btn btn-ghost" style={{ width: "100%" }} onClick={() => void sendFriendRequest(selectedUserProfile)}>
-                      👥 Send Friend Request
-                    </button>
-                  ) : (
-                    <button className="btn btn-ghost" style={{ width: "100%", color: "var(--success)" }}>✓ Friends</button>
-                  )}
-                  {!blockedUsers.includes(selectedUserProfile.id) ? (
-                    <button className="btn btn-danger" style={{ width: "100%", fontSize: 12 }} onClick={() => void blockUser(selectedUserProfile.id)}>🚫 Block User</button>
-                  ) : (
-                    <button className="btn btn-ghost" style={{ width: "100%", fontSize: 12 }} onClick={() => void unblockUser(selectedUserProfile.id)}>Unblock</button>
-                  )}
-                </div>
-              )}
+              <div className="profile-action-grid">
+                {selectedUserProfile.id !== me?.id && (
+                  <>
+                    <button className="btn btn-primary profile-action-btn" onClick={async () => {
+                      await ensureDmChannel(selectedUserProfile.username);
+                      setActiveGuildId(null); setSelectedUserProfile(null);
+                      setActiveChannelId("dm_" + [me?.username || "", selectedUserProfile.username].sort().join("_"));
+                    }}>💬 Send Message</button>
+                    {!myFriends.includes(selectedUserProfile.id) ? (
+                      <button className="btn btn-ghost profile-action-btn" onClick={() => void sendFriendRequest(selectedUserProfile)}>👥 Send Friend Request</button>
+                    ) : (
+                      <button className="btn btn-ghost profile-action-btn profile-friend-btn">✓ Friends</button>
+                    )}
+                    {!blockedUsers.includes(selectedUserProfile.id) ? (
+                      <button className="btn btn-danger profile-action-btn" onClick={() => void blockUser(selectedUserProfile.id)}>🚫 Block User</button>
+                    ) : (
+                      <button className="btn btn-ghost profile-action-btn" onClick={() => void unblockUser(selectedUserProfile.id)}>Unblock</button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

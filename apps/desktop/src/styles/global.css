@@ -897,6 +897,7 @@ a { color: var(--accent); text-decoration: none; }
 .qni-purple{ background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%); color: #fff; }
 .qni-cyan  { background: linear-gradient(135deg, #06B6D4 0%, #0EA5E9 100%); color: #fff; }
 .qni-green { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); color: #fff; }
+.qni-amber { background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%); color: #111; }
 
 /* ── Active states ── */
 .quick-nav-card.qnc-active {

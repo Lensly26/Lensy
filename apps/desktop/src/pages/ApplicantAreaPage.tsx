@@ -41,6 +41,18 @@ export function ApplicantAreaPage() {
     { key: "anythingElse", label: "17. Anything else you'd like us to know?", type: "textarea", required: false }
   ];
 
+  const answeredCount = questionConfigs.reduce((count, q) => {
+    const value = (formData as any)[q.key];
+    return count + (value && value.toString().trim() ? 1 : 0);
+  }, 0);
+  const requiredCount = questionConfigs.filter(q => q.required).length;
+  const answeredRequiredCount = questionConfigs.reduce((count, q) => {
+    if (!q.required) return count;
+    const value = (formData as any)[q.key];
+    return count + (value && value.toString().trim() ? 1 : 0);
+  }, 0);
+  const progressPercent = Math.round((answeredCount / questionConfigs.length) * 100);
+
   useEffect(() => {
     if (!me) return;
 
@@ -92,26 +104,6 @@ export function ApplicantAreaPage() {
     return () => unsubMyApp();
   }, [me]);
 
-  const resetMyData = async () => {
-    if (!me) return;
-    try {
-      await updateDoc(doc(db, "users", me.id), {
-        applicationCount: 0,
-        applicationCooldown: null,
-        altBypassAttempts: 0,
-        blacklistedFromApplying: false
-      });
-      localStorage.removeItem('Lensly_applied_accounts');
-      setAppCount(0);
-      setCooldownTime(null);
-      setAltBypassAttempts(0);
-      setBlacklisted(false);
-      alert("Your application data has been reset!");
-      window.location.reload();
-    } catch (e) {
-      alert("Failed to reset: " + e);
-    }
-  };
 
   const submitApplication = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -208,19 +200,32 @@ export function ApplicantAreaPage() {
     <div style={{ minHeight: "100vh", background: "var(--bg-deep)", color: "var(--text)", padding: "40px 20px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
-          <h1 style={{ fontSize: 32, fontWeight: 800 }}>📋 Staff Applicant Area</h1>
-          <div style={{ display: "flex", gap: 12 }}>
-            <button onClick={resetMyData} className="btn" style={{ background: "rgba(239,68,68,0.15)", color: "#EF4444", border: "1px solid rgba(239,68,68,0.3)", padding: "8px 16px", textDecoration: "none" }}>
-              Dev: Reset My Data
-            </button>
-            <Link to="/app" className="btn btn-primary" style={{ textDecoration: "none" }}>Back to App</Link>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16, marginBottom: 28, flexWrap: "wrap" }}>
+          <div>
+            <h1 style={{ fontSize: 34, fontWeight: 900, margin: 0 }}>📋 Staff Applicant Area</h1>
+            <p style={{ margin: "10px 0 0", color: "var(--text-muted)", maxWidth: 560, lineHeight: 1.6 }}>
+              Complete the Lensly staff application below. Answer clearly and honestly so our review team can assess your fit for the role.
+            </p>
           </div>
+          <Link to="/app" className="btn btn-primary" style={{ textDecoration: "none", whiteSpace: "nowrap" }}>Back to App</Link>
         </div>
 
-        <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border)", borderRadius: 16, padding: 32 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Apply for Lensly Staff</h2>
-          
+        <div style={{ background: "rgba(10,12,20,0.96)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, padding: 34, boxShadow: "0 30px 100px rgba(0,0,0,0.3)" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Apply for Lensly Staff</h2>
+          <div style={{ display: "grid", gap: 10, marginBottom: 22 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600 }}>{answeredCount}/{questionConfigs.length} questions complete</span>
+              <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600 }}>{answeredRequiredCount}/{requiredCount} required answered</span>
+            </div>
+            <div style={{ width: "100%", height: 10, borderRadius: 999, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+              <div style={{ width: `${progressPercent}%`, height: "100%", borderRadius: 999, background: "linear-gradient(135deg, #4F46E5, #22C55E)", transition: "width 0.2s ease" }} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--text-muted)" }}>
+              <span>Progress</span>
+              <span>{progressPercent}%</span>
+            </div>
+          </div>
+
           {blacklisted ? (
             <div style={{ background: "rgba(239,68,68,0.1)", padding: 20, borderRadius: 12, border: "1px solid rgba(239,68,68,0.3)", color: "#EF4444", textAlign: "center" }}>
               <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Access Denied</h3>
@@ -241,37 +246,43 @@ export function ApplicantAreaPage() {
               <p style={{ color: "var(--text-muted)", fontSize: 14 }}>Congratulations! You are now a Trial Moderator.</p>
             </div>
           ) : (
-            <form onSubmit={submitApplication} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <form onSubmit={submitApplication} style={{ display: "grid", gap: 24 }}>
               {myApp && myApp.status === "DENIED" && (
-                <div style={{ background: "rgba(239,68,68,0.1)", padding: 16, borderRadius: 8, border: "1px solid rgba(239,68,68,0.3)", color: "#EF4444", marginBottom: 8 }}>
-                  Your previous application was denied. You have {2 - appCount} attempt(s) remaining.
-                  {myApp.statusReason && <p style={{ marginTop: 4, fontSize: 14, fontWeight: 600 }}>Reason: {myApp.statusReason}</p>}
+                <div style={{ background: "rgba(239,68,68,0.12)", padding: 18, borderRadius: 16, border: "1px solid rgba(239,68,68,0.25)", color: "#FECACA", marginBottom: 4 }}>
+                  <div style={{ fontWeight: 800, marginBottom: 8 }}>Previous application denied.</div>
+                  <div style={{ fontSize: 14, lineHeight: 1.6 }}>You have {2 - appCount} attempt(s) remaining. Please revise your answers and avoid AI-generated responses.</div>
+                  {myApp.statusReason && <p style={{ marginTop: 10, fontSize: 14, fontWeight: 600 }}>Reason: {myApp.statusReason}</p>}
                 </div>
               )}
-              
-              {questionConfigs.map((q) => (
-                <div key={q.key}>
-                  <label style={{ display: "block", fontSize: 14, fontWeight: 600, marginBottom: 8 }}>{q.label}</label>
-                  {q.type === "input" ? (
-                    <input 
-                      type="text" 
-                      value={(formData as any)[q.key]} 
-                      onChange={e => setFormData({...formData, [q.key]: e.target.value})} 
-                      required={q.required} 
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 8, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "var(--text)" }} 
-                    />
-                  ) : (
-                    <textarea 
-                      value={(formData as any)[q.key]} 
-                      onChange={e => setFormData({...formData, [q.key]: e.target.value})} 
-                      required={q.required} 
-                      style={{ width: "100%", height: 100, padding: "10px 14px", borderRadius: 8, background: "var(--bg-deep)", border: "1px solid var(--border)", color: "var(--text)", resize: "vertical" }} 
-                    />
-                  )}
-                </div>
-              ))}
 
-              <button type="submit" className="btn btn-primary" style={{ padding: "12px 24px", fontSize: 16, marginTop: 10 }}>Submit Application</button>
+              <div style={{ display: "grid", gap: 18 }}>
+                {questionConfigs.map((q) => (
+                  <div key={q.key} style={{ display: "grid", gap: 10 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
+                      <label style={{ fontSize: 15, fontWeight: 700, color: "#fff", margin: 0 }}>{q.label}</label>
+                      {q.required && <span style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>Required</span>}
+                    </div>
+                    {q.type === "input" ? (
+                      <input
+                        type="text"
+                        value={(formData as any)[q.key]}
+                        onChange={e => setFormData({ ...formData, [q.key]: e.target.value })}
+                        required={q.required}
+                        style={{ width: "100%", padding: "16px 18px", borderRadius: 18, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff", fontSize: 14, outline: "none" }}
+                      />
+                    ) : (
+                      <textarea
+                        value={(formData as any)[q.key]}
+                        onChange={e => setFormData({ ...formData, [q.key]: e.target.value })}
+                        required={q.required}
+                        style={{ width: "100%", minHeight: 120, padding: "16px 18px", borderRadius: 18, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff", fontSize: 14, resize: "vertical", lineHeight: 1.7, outline: "none" }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <button type="submit" className="btn btn-primary" style={{ padding: "14px 26px", fontSize: 16, alignSelf: "flex-start", minWidth: 220 }}>Submit Application</button>
             </form>
           )}
         </div>

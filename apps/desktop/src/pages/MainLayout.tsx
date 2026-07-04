@@ -2654,31 +2654,53 @@ export function MainLayout() {
           )}
         </div>
 
-        {/* Nav links */}
-        <div style={{ padding: "0 8px 4px", display: "flex", flexDirection: "column", gap: 3 }}>
-          <Link className={`sidebar-nav-item item-profile ${location.pathname === "/profile" ? "active" : ""}`} to="/profile">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-            Profile
+        {/* ─── Nav Cards ─── */}
+        <div style={{ padding: "4px 10px 6px", display: "flex", flexDirection: "column", gap: 3 }}>
+          <Link to="/profile" style={{ textDecoration: "none" }}>
+            <div className={`quick-nav-card ${location.pathname === "/profile" ? "qnc-active qnc-blue" : ""}`}>
+              <div className="quick-nav-icon qni-blue">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <span className="quick-nav-label">Profile</span>
+              <svg className="quick-nav-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </Link>
-          <Link className={`sidebar-nav-item item-settings ${location.pathname === "/settings" ? "active" : ""}`} to="/settings">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9" /></svg>
-            Settings
+
+          <Link to="/settings" style={{ textDecoration: "none" }}>
+            <div className={`quick-nav-card ${location.pathname === "/settings" ? "qnc-active qnc-purple" : ""}`}>
+              <div className="quick-nav-icon qni-purple">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+              </div>
+              <span className="quick-nav-label">Settings</span>
+              <svg className="quick-nav-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </Link>
-          {me?.role && ["TRIAL_MODERATOR", "MODERATOR", "MODERATOR_PLUS", "ADMIN", "MANAGER", "DEVELOPER", "CO_OWNER", "OWNER"].includes(me.role.toUpperCase()) && (
-            <Link className={`sidebar-nav-item item-admin ${location.pathname === "/admin" ? "active" : ""}`} to="/admin">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
-              Admin Panel
+
+          {me?.role && ["TRIAL_MODERATOR","MODERATOR","MODERATOR_PLUS","ADMIN","MANAGER","DEVELOPER","CO_OWNER","OWNER"].includes(me.role.toUpperCase()) && (
+            <Link to="/admin" style={{ textDecoration: "none" }}>
+              <div className={`quick-nav-card ${location.pathname === "/admin" ? "qnc-active qnc-cyan" : ""}`}>
+                <div className="quick-nav-icon qni-cyan">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <span className="quick-nav-label">Admin Panel</span>
+                <svg className="quick-nav-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
             </Link>
           )}
 
-          <Link className={`sidebar-nav-item item-support ${location.pathname === "/support" ? "active" : ""}`} to="/support">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-            Help & Support
+          <Link to="/support" style={{ textDecoration: "none" }}>
+            <div className={`quick-nav-card ${location.pathname === "/support" ? "qnc-active qnc-green" : ""}`}>
+              <div className="quick-nav-icon qni-green">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span className="quick-nav-label">Support</span>
+              <svg className="quick-nav-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </Link>
         </div>
 
-        {/* User Panel */}
-        <div className="user-panel" style={{ position: "relative" }}>
+        {/* ─── Premium User Panel ─── */}
+        <div className="user-panel-glass" style={{ position: "relative" }}>
           {showPresenceMenu && (
             <div className="status-menu">
               {/* Custom status input */}
@@ -2733,19 +2755,35 @@ export function MainLayout() {
             </div>
           )}
 
-          <div className="user-panel-avatar" onClick={(e) => { e.stopPropagation(); setShowPresenceMenu(!showPresenceMenu); }} style={{ cursor: "pointer" }}>
-            <Avatar user={me ?? { username: "me" }} size={36} />
-            <span className={`presence-dot ${presence}`} />
+          {/* Avatar + identity */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0, cursor: "pointer" }}
+            onClick={(e) => { e.stopPropagation(); setShowPresenceMenu(!showPresenceMenu); }}>
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <Avatar user={me ?? { username: "me" }} size={34} />
+              <span className={`presence-dot ${presence}`} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                {me?.displayName ?? me?.username}
+              </div>
+              <div style={{ fontSize: 10, color: "var(--text-muted)", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                {customStatus || PRESENCE_LABELS[presence]}
+              </div>
+            </div>
           </div>
-          <div className="user-panel-info">
-            <div className="user-panel-name">{me?.displayName ?? me?.username}</div>
-            <div className="user-panel-status">{customStatus || PRESENCE_LABELS[presence]}</div>
-          </div>
-          <div className="user-panel-actions">
-            <button title="Mute/DND" onClick={() => void updatePresence(presence === "DND" ? "ONLINE" : "DND")}>
-              {presence === "DND" ? "🔕" : "🔔"}
+
+          {/* Action buttons */}
+          <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+            <button className="upg-action-btn" title={presence === "DND" ? "Unmute" : "Mute / DND"}
+              onClick={() => void updatePresence(presence === "DND" ? "ONLINE" : "DND")}>
+              {presence === "DND"
+                ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              }
             </button>
-            <button title="Settings"><Link to="/settings" style={{ color: "inherit", fontSize: 15 }}>⚙️</Link></button>
+            <Link to="/settings" className="upg-action-btn" title="Settings" style={{ textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+            </Link>
           </div>
         </div>
       </aside>

@@ -649,3 +649,11 @@ a { color: var(--accent); text-decoration: none; }
   cursor: pointer; transition: background 0.1s;
 }
 .status-menu-item:hover { background: var(--bg-hover); }
+
+/* ─── GLOWING STATUS PULSE ─── */
+@keyframes statusPulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+

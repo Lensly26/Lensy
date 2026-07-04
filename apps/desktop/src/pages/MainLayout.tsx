@@ -2736,10 +2736,48 @@ export function MainLayout() {
         )}
 
         <div className="chat-header">
-          <span style={{ fontSize: 18, color: "var(--text-muted)" }}>#</span>
-          <span className="chat-header-name">
-            {activeGuild?.channels?.find((c) => c.id === activeChannelId)?.name ?? (activeChannelId ? activeChannelId.replace("dm_", "").replace(/_/g, " ").replace(me?.username ?? "", "").replace("_", "").trim() : "Select a channel")}
-          </span>
+          {isLenslyDm ? (
+            <>
+              <div style={{
+                background: "linear-gradient(135deg, #10B981, #059669)",
+                borderRadius: "50%",
+                width: 26,
+                height: 26,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 12,
+                boxShadow: "0 0 10px rgba(16, 185, 129, 0.4)",
+                flexShrink: 0
+              }}>
+                🛡️
+              </div>
+              <span className="chat-header-name" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                Lensly SYSTEM
+                <span style={{
+                  background: "linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15))",
+                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  color: "#34D399",
+                  fontSize: "9px",
+                  fontWeight: 800,
+                  padding: "1px 5px",
+                  borderRadius: "4px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  lineHeight: "1"
+                }}>
+                  Verified Bot
+                </span>
+              </span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: 18, color: "var(--text-muted)" }}>#</span>
+              <span className="chat-header-name">
+                {activeGuild?.channels?.find((c) => c.id === activeChannelId)?.name ?? (activeChannelId ? activeChannelId.replace("dm_", "").replace(/_/g, " ").replace(me?.username ?? "", "").replace("_", "").trim() : "Select a channel")}
+              </span>
+            </>
+          )}
           <div style={{ flex: 1 }} />
           {/* Boost button */}
           {activeGuild && (
@@ -2789,7 +2827,190 @@ export function MainLayout() {
           </div>
         )}
 
-        <div className="chat-messages">
+        <div className="chat-messages" style={isLenslyDm && messages.length === 0 ? { display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" } : {}}>
+          {isLenslyDm && (
+            <div style={{
+              width: "100%",
+              maxWidth: 720,
+              margin: messages.length === 0 ? "auto" : "0 auto 30px auto",
+              background: "linear-gradient(135deg, rgba(20, 20, 20, 0.65), rgba(10, 10, 10, 0.85))",
+              backdropFilter: "blur(24px)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              borderRadius: 20,
+              padding: "40px 32px",
+              boxShadow: "0 20px 50px rgba(0, 0, 0, 0.5)",
+              position: "relative",
+              overflow: "hidden",
+              fontFamily: "var(--font)",
+              animation: "fadeIn 0.6s ease"
+            }}>
+              {/* Decorative accent glow */}
+              <div style={{
+                position: "absolute",
+                top: "-150px",
+                right: "-150px",
+                width: 300,
+                height: 300,
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)",
+                pointerEvents: "none"
+              }} />
+              <div style={{
+                position: "absolute",
+                bottom: "-150px",
+                left: "-150px",
+                width: 300,
+                height: 300,
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(79, 124, 255, 0.08) 0%, transparent 70%)",
+                pointerEvents: "none"
+              }} />
+
+              {/* Logo & Intro */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: 32 }}>
+                <div style={{ position: "relative", marginBottom: 20 }}>
+                  <img src="/logo.png" alt="Lensly Logo" style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 16,
+                    boxShadow: "0 8px 30px rgba(79, 124, 255, 0.3)",
+                    border: "2px solid rgba(255, 255, 255, 0.1)"
+                  }} />
+                  <div style={{
+                    position: "absolute",
+                    bottom: -3,
+                    right: -3,
+                    background: "#10B981",
+                    borderRadius: "50%",
+                    width: 20,
+                    height: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "2px solid #000",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
+                  }}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5"><polyline points="20 6 9 17 4 12" /></svg>
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: 10,
+                  fontWeight: 800,
+                  color: "#34D399",
+                  textTransform: "uppercase",
+                  letterSpacing: "2.5px",
+                  marginBottom: 8
+                }}>
+                  Official Secure Feed
+                </div>
+                <h2 style={{
+                  fontSize: 26,
+                  fontWeight: 800,
+                  color: "#fff",
+                  letterSpacing: "-0.02em",
+                  marginBottom: 10
+                }}>
+                  Lensly Core Security
+                </h2>
+                <p style={{
+                  fontSize: 13,
+                  lineHeight: 1.6,
+                  color: "var(--text-muted)",
+                  maxWidth: 500,
+                  margin: "0 auto"
+                }}>
+                  Welcome to your secure communication portal. This dedicated feed receives direct system alerts, role updates, and platform notices verified directly by the Lensly core.
+                </p>
+              </div>
+
+              {/* Grid Layout */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: 16,
+                marginBottom: 32
+              }}>
+                <div style={{
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: "1px solid rgba(255, 255, 255, 0.05)",
+                  borderRadius: 14,
+                  padding: 18,
+                }}>
+                  <div style={{ fontSize: 20, marginBottom: 10 }}>🛡️</div>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Cryptographic Trust</h4>
+                  <p style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.5 }}>
+                    Every notification is signed and authenticated. Fake system accounts cannot simulate this channel.
+                  </p>
+                </div>
+                <div style={{
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: "1px solid rgba(255, 255, 255, 0.05)",
+                  borderRadius: 14,
+                  padding: 18,
+                }}>
+                  <div style={{ fontSize: 20, marginBottom: 10 }}>🔔</div>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Direct Log Updates</h4>
+                  <p style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.5 }}>
+                    Receive real-time alerts regarding server suspensions, security events, or warning strikes.
+                  </p>
+                </div>
+                <div style={{
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: "1px solid rgba(255, 255, 255, 0.05)",
+                  borderRadius: 14,
+                  padding: 18,
+                }}>
+                  <div style={{ fontSize: 20, marginBottom: 10 }}>🔒</div>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Appeals & Support</h4>
+                  <p style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.5 }}>
+                    You cannot send outbound replies here. For help or appeals, please use the Support module.
+                  </p>
+                </div>
+              </div>
+
+              {/* Status panel */}
+              <div style={{
+                background: "rgba(16, 185, 129, 0.04)",
+                border: "1px solid rgba(16, 185, 129, 0.15)",
+                borderRadius: 12,
+                padding: "14px 18px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 12
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    background: "#10B981",
+                    boxShadow: "0 0 8px #10B981",
+                    animation: "statusPulse 2s infinite",
+                    display: "inline-block"
+                  }} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>
+                    System Status: All Services Operational
+                  </span>
+                </div>
+                <Link to="/support" style={{
+                  background: "rgba(16, 185, 129, 0.15)",
+                  border: "1px solid rgba(16, 185, 129, 0.25)",
+                  color: "#34D399",
+                  padding: "6px 14px",
+                  borderRadius: 8,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  transition: "all 0.2s ease"
+                }}>
+                  Get Assistance
+                </Link>
+              </div>
+            </div>
+          )}
+
           {messages.map((m, i) => renderMessage(m, i))}
           <div ref={messagesEndRef} />
         </div>
@@ -2828,21 +3049,23 @@ export function MainLayout() {
             {isLenslyDm ? (
               <div style={{
                 width: "100%",
-                minHeight: 44,
-                padding: "14px 16px",
-                borderRadius: 14,
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid var(--border)",
+                padding: "14px 18px",
+                borderRadius: 12,
+                background: "linear-gradient(135deg, rgba(20, 20, 20, 0.75), rgba(10, 10, 10, 0.85))",
+                border: "1px solid rgba(255, 255, 255, 0.06)",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
                 color: "var(--text-muted)",
-                fontSize: 14,
+                fontSize: 12.5,
+                fontWeight: 500,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                textAlign: "center",
-                lineHeight: 1.4,
+                gap: 8,
                 flex: 1,
+                userSelect: "none"
               }}>
-                This is the official Lensly account. You cannot send messages here.
+                <span style={{ fontSize: 14 }}>🔒</span>
+                <span>This is the official Lensly system account. Outbound messaging is disabled.</span>
               </div>
             ) : (
               <textarea ref={textareaRef} value={draft} onChange={autoGrow}

@@ -2655,7 +2655,7 @@ export function MainLayout() {
         </div>
 
         {/* ─── Nav Cards ─── */}
-        <div style={{ padding: "4px 10px 6px", display: "flex", flexDirection: "column", gap: 3 }}>
+        <div className="quick-nav-group">
           <Link to="/profile" style={{ textDecoration: "none" }}>
             <div className={`quick-nav-card ${location.pathname === "/profile" ? "qnc-active qnc-blue" : ""}`}>
               <div className="quick-nav-icon qni-blue">

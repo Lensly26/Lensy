@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Lensly
 
 Desktop-first communication app (Discord-class) with a clean UI, SQLite for **local dev** (no Docker), optional PostgreSQL for production, real-time channels, admin tools, and room to grow.
@@ -79,3 +80,6 @@ npm run tauri:dev
 ```
 
 Requires Rust and `npm run setup` from the repo root first.
+=======
+# Lensy
+>>>>>>> 8378a1008c8a528f80cfb1136bb8a7373aa470ba

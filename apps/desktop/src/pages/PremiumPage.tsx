@@ -82,13 +82,9 @@ export function PremiumPage() {
   const alreadyPremium = me?.isPremium === true;
 
   useEffect(() => {
-    const isMock = queryParams.get("mock_checkout") === "true";
     const plan = queryParams.get("priceId");
-    if (isMock) {
-      setShowCheckout(true);
-      if (plan) {
-        setSelectedPlan(plan);
-      }
+    if (plan) {
+      setSelectedPlan(plan);
     }
   }, [location.search]);
 
@@ -301,23 +297,6 @@ export function PremiumPage() {
                 cursor: "pointer", boxShadow: "0 4px 16px rgba(140,94,255,0.3)"
               }}>
                 Close
-              </button>
-              
-              <button 
-                onClick={() => {
-                  setShowStripeComingSoon(false);
-                  setShowCheckout(true);
-                }} 
-                style={{
-                  width: "100%", padding: "10px", borderRadius: 12,
-                  background: "transparent", border: "1px solid rgba(255,255,255,0.15)",
-                  color: "var(--text-muted)", fontSize: 12, fontWeight: 600,
-                  cursor: "pointer", transition: "all 0.15s"
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
-                onMouseLeave={e => { e.currentTarget.style.color = "var(--text-muted)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; }}
-              >
-                Bypass & Test mock checkout
               </button>
             </div>
           </div>
